@@ -1,5 +1,6 @@
 package it.unibs.fp.game;
 
+import it.unibs.fp.librerie.ClassMenu;
 import it.unibs.fp.librerie.Metodi;
 import it.unibs.fp.mylib.InputDati;
 import it.unibs.fp.mylib.MyMenu;
@@ -9,12 +10,12 @@ import java.util.ArrayList;
 public class Livello {
     private static final int SPOST = 1;
 
-    Mappa mappa;
-    Personaggio p;
-    ArrayList<Mostro> mostri;
-    ArrayList<Chest> forzieri;
-    int princessCol;
-    int princessRow;
+    private Mappa mappa;
+    private Personaggio p;
+    private ArrayList<Mostro> mostri;
+    private ArrayList<Chest> forzieri;
+    private int princessCol;
+    private int princessRow;
 
     public Livello() {
         this.mappa = new Mappa();
@@ -69,7 +70,7 @@ public class Livello {
         int potenza = switch (tipo) {
             case Oggetto.ARMA -> Metodi.generateRandom(35, 55);
             case Oggetto.SCUDO -> 5;
-            case Oggetto.POZIONE -> 0;
+            case Oggetto.POZIONE -> 1;
             default -> 0;
         };
 
@@ -107,26 +108,74 @@ public class Livello {
     }
 
     public boolean inputComandi() {
-        char comando = InputDati.leggiUpperChar("Inserire comando (WASD movimento, E apri, M inventario)", "WASDEM");
-        switch(comando){
-            case 'W': case 'S': case 'A': case 'D':
+        char comando = InputDati.leggiUpperChar("Inserire comando (WASD movimento, E apri forziere, M apri inventario)", "WASDEM");
+        switch (comando) {
+            case 'W', 'S', 'A', 'D' -> {
                 movimentoPoersonaggio(comando);
                 return true;
-                break;
-            case 'E':
+            }
+            case 'E' -> {
                 apriCesta();
-                break;
-            case 'M':
+                return true;
+            }
+            case 'M' -> {
                 mostraMenu();
+                return false;
+            }
+            default -> {
+                return false;
+            }
+        }
+    }
+
+    private void apriCesta() {
+        for(Chest c : forzieri) {
+            if(p.getX() == c.getX() && p.getY() == c.getY()) {
+                Oggetto newObj = c.getOgg();
+                System.out.println(newObj);
+                if(!p.getOgg().getTipo().equals(Oggetto.PUGNI)) {
+                    ClassMenu menuObj = new ClassMenu("Scegli oggetto da tenere: ", new String[]{"New: " + newObj.toString(), "Old: " + p.getOgg().toString()});
+                    int scelta = menuObj.scegliNoZero();
+                    if(scelta == 1)
+                        p.setOgg(newObj);
+                }
+                else
+                    p.setOgg(newObj);
+
+                /*AGGIUNTA DEL NUOVO OGGETTO E GESIONE ZAINO/INVENTARIO (BLOCCO 4)
+                if(p.getnObj() == Personaggio.MAX_OGGETTI) {
+                    String[] objs = new String[];
+                    int i = 0;
+                    for(Oggetto o : p.getInventario())
+                        objs[++i] = o.toString();
+
+                    ClassMenu menuObj = new ClassMenu("Scegli oggetto da sostituire (0 per lasciare nuovo oggetto): ", objs);
+                    int scelta = menuObj.scegli();
+                    p.getInventario().remove(p.getInventario().get(scelta - 1));
+                    p.getInventario().add(newObj);
+                }
+                 */
+            }
+        }
+        System.out.println("Nessun forziere da aprire");
+    }
+
+    private void mostraMenu() {
+        ClassMenu menu = new ClassMenu("Scelta: ", new String[]{"Inventario", "Statistiche", "Abbandona la partita"});
+        switch (menu.scegliNoZero()) {
+            case 1:
+                System.out.println("Inventario:\n" + p.stampaInventario());
+                break;
+            case 2:
+                System.out.println("Statistiche:\n" + p.stampaStatistiche());
+                break;
+            case 3:
+                System.out.println("Partita terminata");
+                System.exit(0);
                 break;
             default:
                 break;
         }
-        return false;
-    }
-
-    private void mostraMenu() {
-        MyMenu menu = new MyMenu("Scelta: ", )
     }
 
     private void movimentoPoersonaggio(char comando) {

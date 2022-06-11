@@ -22,4 +22,9 @@ public class Oggetto {
     public int getPotenza() {
         return potenza;
     }
+
+    @Override
+    public String toString() {
+        return "Tipo: " + tipo + "\tPotenza: " + potenza;
+    }
 }

@@ -59,6 +59,10 @@ public class Entita {
         this.y = y;
     }
 
+    public void setOgg(Oggetto ogg) {
+        this.ogg = ogg;
+    }
+
     public boolean isVivo() {
         return this.hp > 0;
     }
