@@ -24,8 +24,13 @@ public class Partita {
             do {
                 turnoFinito = livello1.inputComandi();
             }while(!turnoFinito);
+            //livello1.getMappa().stampaMappa();
 
+            System.out.println("\n\nSpostamento Mostri\n\n");
+
+            livello1.pathfindingMostri();
             livello1.getMappa().stampaMappa();
+
         }
 
         return true;

@@ -121,7 +121,6 @@ public class Livello {
         switch (comando) {
             case 'W', 'S', 'A', 'D' -> {
                 movimentoPersonaggio(comando);
-                isPrincessSalva();
                 return true;
             }
             case 'E' -> {
@@ -144,28 +143,25 @@ public class Livello {
             if(p.getX() == c.getX() && p.getY() == c.getY()) {
                 Oggetto newObj = c.getOgg();
                 System.out.println(newObj);
-                if(!p.getOgg().getTipo().equals(Oggetto.PUGNI)) {
-                    ClassMenu menuObj = new ClassMenu("Scegli oggetto da tenere: ", new String[]{"New: " + newObj.toString(), "Old: " + p.getOgg().toString()});
-                    int scelta = menuObj.scegliNoZero();
-                    if(scelta == 1)
-                        p.setOgg(newObj);
-                }
-                else
-                    p.setOgg(newObj);
-
-                /*AGGIUNTA DEL NUOVO OGGETTO E GESIONE ZAINO/INVENTARIO (BLOCCO 4)
                 if(p.getnObj() == Personaggio.MAX_OGGETTI) {
-                    String[] objs = new String[];
+                    String[] objs = new String[p.getnObj()];
                     int i = 0;
                     for(Oggetto o : p.getInventario())
                         objs[++i] = o.toString();
 
-                    ClassMenu menuObj = new ClassMenu("Scegli oggetto da sostituire (0 per lasciare nuovo oggetto): ", objs);
+                    ClassMenu menuObj = new ClassMenu("Scegli oggetto da sostituire (0 per scartare il nuovo oggetto): ", objs);
                     int scelta = menuObj.scegli();
-                    p.getInventario().remove(p.getInventario().get(scelta - 1));
+                    if(scelta != 0) {
+                        Oggetto oldObj = p.getInventario().get(scelta - 1);
+                        p.getInventario().add(newObj);
+                        p.getInventario().remove(oldObj);
+                    }
+                }
+                else {
+                    p.setOgg(newObj);
                     p.getInventario().add(newObj);
                 }
-                 */
+
                 oldC = c;
                 break;
             }
@@ -180,6 +176,7 @@ public class Livello {
         ClassMenu menu = new ClassMenu("Scelta: ", new String[]{"Inventario", "Statistiche", "Abbandona la partita"});
         switch (menu.scegliNoZero()) {
             case 1:
+                usaOggettoInventario();
                 System.out.println("Inventario:\n" + p.stampaInventario());
                 break;
             case 2:
@@ -194,6 +191,9 @@ public class Livello {
         }
     }
 
+    private void usaOggettoInventario() {
+    }
+
     private void movimentoPersonaggio(char comando) {
         int oldX = p.getX();
         int oldY = p.getY();
@@ -201,58 +201,64 @@ public class Livello {
         int newX;
 
         switch (comando) {
-            case 'W':
+            case 'W' -> {
                 newY = oldY - SPOST;
-                if (newY >= 0 && mappa.getCella(newY, oldX).getC() != '#') {
-                    p.setY(newY);
-                    //VECCHIA CELLA
-                    mappa.setCella(oldY, oldX, '.');
-                    //NUOVA CELLA
-                    mappa.setCella(newY, oldX, 'O');
+                if (newY >= 0) {
+                    if (mappa.getCella(newY, oldX).getC() != '#') {
+                        p.setY(newY);
+                        //VECCHIA CELLA
+                        mappa.setCella(oldY, oldX, '.');
+                        //NUOVA CELLA
+                        mappa.setCella(newY, oldX, 'O');
+                    }
                 } else {
                     System.out.println("Limite");
                 }
-                break;
-            case 'S':
+            }
+            case 'S' -> {
                 newY = oldY + SPOST;
-                if (newY <= mappa.getHeight() && mappa.getCella(newY, oldX).getC() != '#') {
-                    p.setY(newY);
-                    //VECCHIA CELLA
-                    mappa.setCella(oldY, oldX, '.');
-                    //NUOVA CELLA
-                    mappa.setCella(newY, oldX, 'O');
+                if (newY < mappa.getHeight()) {
+                    if (mappa.getCella(newY, oldX).getC() != '#') {
+                        p.setY(newY);
+                        //VECCHIA CELLA
+                        mappa.setCella(oldY, oldX, '.');
+                        //NUOVA CELLA
+                        mappa.setCella(newY, oldX, 'O');
+                    }
                 } else {
                     System.out.println("Limite");
                 }
-                break;
-            case 'A':
+            }
+            case 'A' -> {
                 newX = oldX - SPOST;
-                if (newX >= 0 && mappa.getCella(oldY, newX).getC() != '#') {
-                    p.setX(newX);
-                    //VECCHIA CELLA
-                    mappa.setCella(oldY, oldX, '.');
-                    //NUOVA CELLA
-                    mappa.setCella(oldY, newX, 'O');
+                if (newX >= 0) {
+                    if (mappa.getCella(oldY, newX).getC() != '#') {
+                        p.setX(newX);
+                        //VECCHIA CELLA
+                        mappa.setCella(oldY, oldX, '.');
+                        //NUOVA CELLA
+                        mappa.setCella(oldY, newX, 'O');
+                    }
                 } else {
                     System.out.println("Limite");
                 }
-                break;
-            case 'D':
+            }
+            case 'D' -> {
                 newX = oldX + SPOST;
-                if (newX <= mappa.getWidth() && mappa.getCella(oldY, newX).getC() != '#') {
-                    p.setX(newX);
-                    //VECCHIA CELLA
-                    mappa.setCella(oldY, oldX, '.');
-                    //NUOVA CELLA
-                    mappa.setCella(oldY, newX, 'O');
+                if (newX < mappa.getWidth()) {
+                    if (mappa.getCella(oldY, newX).getC() != '#') {
+                        p.setX(newX);
+                        //VECCHIA CELLA
+                        mappa.setCella(oldY, oldX, '.');
+                        //NUOVA CELLA
+                        mappa.setCella(oldY, newX, 'O');
+                    }
                 } else {
                     System.out.println("Limite");
                 }
-                break;
-
-            default:
-                System.out.println("NA");
-                break;
+            }
+            default -> {
+            }
         }
     }
 
@@ -279,41 +285,74 @@ public class Livello {
     }
 
     public boolean isPrincessSalva() {
-        if(p.getX() == princessRow && p.getY() == princessCol)
+        if(p.getX() == princessCol && p.getY() == princessRow)
             return true;
         return false;
     }
 
-
     public void pathfindingMostri() {
         for(Mostro m : mostri)
             spostamentoMostro(m);
+        return;
     }
 
     public void spostamentoMostro(Mostro m) {
-        int direzione = Metodi.generateRandom(1,4);
+        int direzione = Metodi.generateRandom(1,4);;
         int nSpost = 0;
-        do {
-            switch (direzione) {
-                int oldX = m.getX();
-                int oldY = m.getY();
-                int newY;
-                int newX;
-                case 1:     //W
-                    newY = oldY -SPOST;
-                    if(newY >= 0)
-                        break;
-                case 2:     //S
-                    break;
-                case 3:     //A
-                    break;
-                case 4:     //D
-                    break;
-                default:
-                    break;
 
+        int oldX = m.getX();
+        int oldY = m.getY();
+        int newY;
+        int newX;
+
+        switch (direzione) {
+            case 1 -> {     //W
+                newY = oldY - SPOST;
+                if (newY >= 0)
+                    if (this.mappa.getCella(newY, oldX).getC() == '.' || this.mappa.getCella(newY, oldX).getC() == 'O') {
+                        m.setY(newY);
+                        //VECCHIA CELLA
+                        this.mappa.setCella(oldY, oldX, '.');
+                        //NUOVA CELLA
+                        this.mappa.setCella(newY, oldX, 'M');
+                    }
             }
-        }while(nSpost < 4 && )
+            case 2 -> {     //S
+                newY = oldY + SPOST;
+                if (newY < this.mappa.getHeight())
+                    if (this.mappa.getCella(newY, oldX).getC() == '.' || this.mappa.getCella(newY, oldX).getC() == 'O') {
+                        m.setY(newY);
+                        //VECCHIA CELLA
+                        this.mappa.setCella(oldY, oldX, '.');
+                        //NUOVA CELLA
+                        this.mappa.setCella(newY, oldX, 'M');
+                    }
+            }
+            case 3 -> {     //A
+                newX = oldX - SPOST;
+                if (newX >= 0)
+                    if (this.mappa.getCella(oldY, newX).getC() == '.' || this.mappa.getCella(oldY, newX).getC() == 'O') {
+                        m.setX(newX);
+                        //VECCHIA CELLA
+                        this.mappa.setCella(oldY, oldX, '.');
+                        //NUOVA CELLA
+                        this.mappa.setCella(oldY, newX, 'M');
+                    }
+            }
+            case 4 -> {     //D
+                newX = oldX + SPOST;
+                if (newX < this.mappa.getWidth())
+                    if (this.mappa.getCella(oldY, newX).getC() == '.' || this.mappa.getCella(oldY, newX).getC() == 'O') {
+                        m.setX(newX);
+                        //VECCHIA CELLA
+                        this.mappa.setCella(oldY, oldX, '.');
+                        //NUOVA CELLA
+                        this.mappa.setCella(oldY, newX, 'M');
+                    }
+            }
+            default -> {
+            }
+        }
     }
 
 }
