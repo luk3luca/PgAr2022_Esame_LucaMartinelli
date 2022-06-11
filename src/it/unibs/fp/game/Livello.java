@@ -5,6 +5,7 @@ import it.unibs.fp.librerie.Metodi;
 import it.unibs.fp.mylib.InputDati;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Classe per controllo del livello, movimenti e menu di scelta;
@@ -16,14 +17,11 @@ public class Livello {
     private Personaggio p;
     private ArrayList<Mostro> mostri = new ArrayList<>();
     private ArrayList<Chest> forzieri = new ArrayList<>();
-    private ArrayList<Oggetto> pozioni = new ArrayList<>();
     private int princessCol;
     private int princessRow;
-    private boolean princessSalva;
 
     public Livello() {
         this.mappa = new Mappa();
-        princessSalva = false;
         creaElementiLivello();
     }
 
@@ -58,18 +56,12 @@ public class Livello {
      * @param y posizone y
      */
     private void creaElementi(Cella cella, int x, int y) {
-        switch(cella.getC()) {
-            case 'O':
-                creaGiocatore(x , y);
-                break;
-            case 'M':
-                mostri.add(creaMostro(x, y));
-                break;
-            case 'C':
-                forzieri.add(creaCesta(x, y));
-                break;
-            default:
-                break;
+        switch (cella.getC()) {
+            case 'O' -> creaGiocatore(x, y);
+            case 'M' -> mostri.add(creaMostro(x, y));
+            case 'C' -> forzieri.add(creaCesta(x, y));
+            default -> {
+            }
         }
     }
 
@@ -82,6 +74,12 @@ public class Livello {
         this.p = new Personaggio(InputDati.leggiStringaNonVuota("Inserire nome del giocatore: "), x, y);
     }
 
+    /**
+     * Creazione mostro
+     * @param x
+     * @param y
+     * @return
+     */
     public Mostro creaMostro(int x, int y) {
         String name = Metodi.generatePermutation("dijkstra");
 
@@ -92,6 +90,12 @@ public class Livello {
         return new Mostro(name, hp, ogg, x, y);
     }
 
+    /**
+     * Creazione cesta
+     * @param x
+     * @param y
+     * @return
+     */
     public Chest creaCesta(int x, int y) {
         String tipo = oggettoProbabilita();
         int potenza = switch (tipo) {
@@ -105,6 +109,10 @@ public class Livello {
 
     }
 
+    /**
+     * Probabilita di un oggetto in una cesta
+     * @return
+     */
     public String oggettoProbabilita() {
         String[] oggetti = new String[100];
         int countA = 0;
@@ -130,6 +138,10 @@ public class Livello {
         return oggetti[index];
     }
 
+    /**
+     * Comandi movimento e gestione
+     * @return
+     */
     public boolean inputComandi() {
         char comando = InputDati.leggiUpperChar("Inserire comando (W A S D movimento, E apri forziere, M apri inventario)", "W A S D E M");
         switch (comando) {
@@ -150,6 +162,10 @@ public class Livello {
         }
     }
 
+    /**
+     * Menu inventario
+     * @return
+     */
     public int sceltaMenuInventario() {
         String[] objs = new String[p.getnObj()];
         for(int i = 0; i < p.getnObj(); i++)
@@ -159,6 +175,11 @@ public class Livello {
         return menuObj.scegli();
     }
 
+    /**
+     * Controllo tipo di oggetto selezionato
+     * @param tipo
+     * @return
+     */
     public boolean controllaTipo(String tipo) {
         for(Oggetto o : p.getInventario())
             if(o.getTipo().equals(tipo))
@@ -166,13 +187,19 @@ public class Livello {
         return false;
     }
 
+    /**
+     * Apertura cesta
+     * <p>Se si ha un oggetto ARMA o SCUDO lo si deve sostituire</p>
+     * <p>Se l'inventario e pieno siu sceglie cosa sostituire</p>
+     * <p>Si aggiunge un oggetto all'inventario se non e pieno</p>
+     */
     public void apriCesta() {
         Chest oldC = null;
         for(Chest c : forzieri) {
             if(p.getX() == c.getX() && p.getY() == c.getY()) {
                 Oggetto newObj = c.getOgg();
                 System.out.println(newObj);
-                if(newObj.getTipo() == Oggetto.ARMA && controllaTipo(Oggetto.ARMA) || newObj.getTipo() == Oggetto.SCUDO && controllaTipo(Oggetto.SCUDO)) {
+                if(Objects.equals(newObj.getTipo(), Oggetto.ARMA) && controllaTipo(Oggetto.ARMA) || Objects.equals(newObj.getTipo(), Oggetto.SCUDO) && controllaTipo(Oggetto.SCUDO)) {
                     Oggetto old = null;
                     for(int i = 0; i < p.getnObj(); i++)
                         if (newObj.getTipo().equals(p.getInventario().get(i).getTipo())) {
@@ -218,12 +245,16 @@ public class Livello {
         System.out.println("Nessun forziere da aprire");
     }
 
+    /**
+     * utilizzo di un oggetto dell'inventario con controllo se e pozione
+     * @return
+     */
     private boolean usaOggettoInventario() {
         int scelta = sceltaMenuInventario();
         if(scelta != 0) {
             p.setOgg(p.getInventario().get(scelta - 1));
             System.out.println("Oggetto in uso: " + p.getOgg().toString());
-            if (p.getOgg().getTipo() == Oggetto.POZIONE) {
+            if (p.getOgg().getTipo().equals(Oggetto.POZIONE)) {
                 p.cura(Personaggio.HP / 2);
                 System.out.println("Nuovi HP: " + p.getHp());
                 return true;
@@ -232,6 +263,10 @@ public class Livello {
         return false;
     }
 
+    /**
+     * Menu comando M
+     * @return
+     */
     private boolean mostraMenu() {
         ClassMenu menu = new ClassMenu("Scelta: ", new String[]{"Inventario", "Statistiche", "Abbandona la partita", "Usa oggetto da Inventario"});
         switch (menu.scegliNoZero()) {
@@ -258,6 +293,10 @@ public class Livello {
         }
     }
 
+    /**
+     * Movimento del personaggio con controlli su muri e bordi
+     * @param comando
+     */
     private void movimentoPersonaggio(char comando) {
         int oldX = p.getX();
         int oldY = p.getY();
@@ -326,8 +365,10 @@ public class Livello {
         }
     }
 
+    /**
+     * Se personaggio incotra mostro
+     */
     public void isAMostro() {
-        boolean esito;
         Mostro oldM = null;
 
         for(Mostro m : mostri) {
@@ -348,8 +389,10 @@ public class Livello {
         this.mostri.remove(oldM);
     }
 
+    /**
+     * Se mostro incontra personaggio
+     */
     public void isAPlayer() {
-        boolean esito;
         Mostro oldM = null;
 
         for(Mostro m : mostri) {
@@ -370,22 +413,28 @@ public class Livello {
         this.mostri.remove(oldM);
     }
 
+    /**
+     * Controllo sul salvataggio della principessa
+     * @return
+     */
     public boolean isPrincessSalva() {
-        if(p.getX() == princessCol && p.getY() == princessRow)
-            return true;
-        return false;
+        return p.getX() == princessCol && p.getY() == princessRow;
     }
 
+    /**
+     * Spostamento dei mostri
+     */
     public void pathfindingMostri() {
         for(Mostro m : mostri)
             spostamentoMostro(m);
-        return;
     }
 
+    /**
+     * Spostamento di un mostro con controllo sulle celle disponibili
+     * @param m
+     */
     public void spostamentoMostro(Mostro m) {
-        int direzione = Metodi.generateRandom(1,4);;
-        int nSpost = 0;
-
+        int direzione = Metodi.generateRandom(1,4);
         int oldX = m.getX();
         int oldY = m.getY();
         int newY;
