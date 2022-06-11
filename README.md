@@ -4,9 +4,9 @@
  |                             |                               |
  | - - - - - - - - - - - - - - | - - - - - - - - - - - - - - - |
  | Nome                        | ** < Luca >**                 |
- | Cognome                     | ** <Martinelli >**            |
- | Matricola                   | ** <735879 >**                |
- | Corso di Studi              | ** <Ingegneria Informatica >**|
+ | Cognome                     | ** < Martinelli >**            |
+ | Matricola                   | ** < 735879 >**                |
+ | Corso di Studi              | ** < Ingegneria Informatica >**|
 
  ## Moduli Implementati
 
