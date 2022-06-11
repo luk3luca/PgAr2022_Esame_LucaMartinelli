@@ -18,4 +18,42 @@ public class Entita {
         this.x = x;
         this.y = y;
     }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public int getAttaccoBase() {
+        return attaccoBase;
+    }
+
+    public int getDifesaBase() {
+        return difesaBase;
+    }
+
+    public Oggetto getOgg() {
+        return ogg;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setHp(int danno) {
+        this.hp -= danno;
+    }
+
+    public boolean isVivo() {
+        return this.hp > 0;
+    }
+
+
 }

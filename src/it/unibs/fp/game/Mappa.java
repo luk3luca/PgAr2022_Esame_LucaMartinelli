@@ -22,4 +22,8 @@ public class Mappa {
     public Cella getCella(int row, int col) {
         return mappa[row][col];
     }
+
+    public Cella[][] getMappa() {
+        return mappa;
+    }
 }

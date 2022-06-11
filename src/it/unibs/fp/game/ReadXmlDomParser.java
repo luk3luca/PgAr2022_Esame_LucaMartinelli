@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class ReadXmlDomParser {
-    private static final String FILENAME = "livello2.xml";
+    private static final String FILENAME = "livello1.xml";
 
     public static Cella[][] creaMappa() {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
