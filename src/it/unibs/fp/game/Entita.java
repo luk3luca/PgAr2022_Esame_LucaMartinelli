@@ -49,6 +49,10 @@ public class Entita {
         return y;
     }
 
+    /**
+     * rimozione di HP del danno
+     * @param danno
+     */
     public void setHp(int danno) {
         this.hp -= danno;
     }

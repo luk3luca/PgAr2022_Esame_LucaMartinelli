@@ -3,14 +3,17 @@ package it.unibs.fp.game;
 import it.unibs.fp.librerie.Metodi;
 
 public class Scontro {
-    Entita e1;
-    Entita e2;
+    private Entita e1;
+    private Entita e2;
 
     public Scontro(Entita e1, Entita e2) {
         this.e1 = e1;
         this.e2 = e2;
     }
 
+    /**
+     * Scontro tra 2 entita con messaggio su danni provocati a ogni attacco
+     */
     public void battaglia() {
         int turno = 0;
         int danno1 = 0;
@@ -30,12 +33,18 @@ public class Scontro {
         }
     }
 
+
     public int infliggiDanno(Entita e1, Entita e2) {
         int danno = calcolaDanno(e1);
         e2.setHp(danno);
         return danno;
     }
-    
+
+    /**
+     * calcolo del danno inflitto
+     * @param e
+     * @return
+     */
     public int calcolaDanno(Entita e) {
         return (int) ((double)(((2 * e.getOgg().getPotenza() * e.getAttaccoBase()) / (25 * e.getDifesaBase())) + 2 ) * calcolaModificatore());
     }

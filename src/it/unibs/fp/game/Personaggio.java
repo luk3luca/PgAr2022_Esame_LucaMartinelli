@@ -45,6 +45,11 @@ public class Personaggio extends Entita{
         }
     }
 
+    /**
+     * Metodo per calcolare il danno inflitto al giocatore
+     * <p>si considerano i punti vita dell'eventuale scudo attivo</p>
+     * @param danno
+     */
     @Override
     public void setHp(int danno) {
         if(ogg.getTipo() == Oggetto.SCUDO) {
@@ -73,6 +78,10 @@ public class Personaggio extends Entita{
         return stats;
     }
 
+    /**
+     * Cura del giocatore con pozione
+     * @param cura
+     */
     public void cura(int cura) {
         super.setHp(-cura);
         if(getHp() > Personaggio.HP)

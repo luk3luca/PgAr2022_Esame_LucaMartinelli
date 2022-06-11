@@ -9,6 +9,10 @@ public class Partita {
         this.turno = 0;
     }
 
+    /**
+     * Ciclo di turni per terminare la partita
+     * @return
+     */
     public boolean gioco() {
         boolean turnoFinito;
 
