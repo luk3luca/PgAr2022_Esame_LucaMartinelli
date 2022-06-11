@@ -137,29 +137,44 @@ public class Livello {
         }
     }
 
+    public int sceltaMenuInventario() {
+        String[] objs = new String[p.getnObj()];
+        /*
+        for(Oggetto o : p.getInventario())
+            objs[i++] = o.toString();
+         */
+        for(int i = 0; i < p.getnObj(); i++)
+            objs[i] = p.getInventario().get(i).toString();
+
+        ClassMenu menuObj = new ClassMenu("Scegli oggetto (0 per scartare il nuovo oggetto): ", objs);
+        return menuObj.scegli();
+    }
+
     private void apriCesta() {
         Chest oldC = null;
         for(Chest c : forzieri) {
             if(p.getX() == c.getX() && p.getY() == c.getY()) {
                 Oggetto newObj = c.getOgg();
                 System.out.println(newObj);
-                if(p.getnObj() == Personaggio.MAX_OGGETTI) {
-                    String[] objs = new String[p.getnObj()];
-                    int i = 0;
-                    for(Oggetto o : p.getInventario())
-                        objs[++i] = o.toString();
 
-                    ClassMenu menuObj = new ClassMenu("Scegli oggetto da sostituire (0 per scartare il nuovo oggetto): ", objs);
-                    int scelta = menuObj.scegli();
+                if(p.getnObj() == Personaggio.MAX_OGGETTI) {
+                    System.out.println("Sostituisci oggetto");
+                    int scelta = sceltaMenuInventario();
+
                     if(scelta != 0) {
                         Oggetto oldObj = p.getInventario().get(scelta - 1);
-                        p.getInventario().add(newObj);
-                        p.getInventario().remove(oldObj);
+                        p.aggiungiOggettoInventario(newObj);
+                        p.rimuoviOggettoInventario(oldObj);
                     }
                 }
                 else {
                     p.setOgg(newObj);
-                    p.getInventario().add(newObj);
+                    p.aggiungiOggettoInventario(newObj);
+                    System.out.println("Sceglio oggetto da usare");
+                    int scelta = sceltaMenuInventario();
+
+                    if(scelta != 0)
+                        p.setOgg(p.getInventario().get(scelta - 1));
                 }
 
                 oldC = c;
@@ -171,6 +186,10 @@ public class Livello {
             this.forzieri.remove(oldC);
         System.out.println("Nessun forziere da aprire");
     }
+
+    private void usaOggettoInventario() {
+    }
+
 
     private void mostraMenu() {
         ClassMenu menu = new ClassMenu("Scelta: ", new String[]{"Inventario", "Statistiche", "Abbandona la partita"});
@@ -191,8 +210,6 @@ public class Livello {
         }
     }
 
-    private void usaOggettoInventario() {
-    }
 
     private void movimentoPersonaggio(char comando) {
         int oldX = p.getX();
