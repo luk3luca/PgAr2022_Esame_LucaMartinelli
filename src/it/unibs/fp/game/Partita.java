@@ -26,11 +26,11 @@ public class Partita {
             }while(!turnoFinito);
             //livello1.getMappa().stampaMappa();
 
-            System.out.println("\n\nSpostamento Mostri\n\n");
+            System.out.println("\nSpostamento Mostri\n");
 
             livello1.pathfindingMostri();
             livello1.getMappa().stampaMappa();
-
+            livello1.isAPlayer();
         }
 
         return true;

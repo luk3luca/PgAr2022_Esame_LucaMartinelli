@@ -3,36 +3,37 @@ package it.unibs.fp.game;
 import it.unibs.fp.librerie.Metodi;
 
 public class Scontro {
-    Personaggio p;
-    Mostro m;
+    Entita e1;
+    Entita e2;
 
-    public Scontro(Personaggio p, Mostro m) {
-        this.p = p;
-        this.m = m;
+    public Scontro(Entita e1, Entita e2) {
+        this.e1 = e1;
+        this.e2 = e2;
     }
-    
-    public boolean battaglia() {
-        int turno = 0;
 
-        while(this.p.isVivo() && this.m.isVivo()) {
+    public void battaglia() {
+        int turno = 0;
+        int danno1 = 0;
+        int danno2 = 0;
+
+        while(this.e1.isVivo() && this.e2.isVivo()) {
+            System.out.println("Scontro:");
             if(Metodi.isPari(turno)) {
-                infliggiDanno(p, m);
+                danno1 = infliggiDanno(e1, e2);
+                System.out.println("+  " + e1.getNome() + " ha fatto " + danno1 + " a " + e2.getNome() + ", ora ha " + e2.getHp() + " HP");
             }
             else {
-                infliggiDanno(m, p);
+                danno2 = infliggiDanno(e2, e1);
+                System.out.println("+  " + e2.getNome() + " ha fatto " + danno2 + " a " + e1.getNome() + ", ora ha " + e1.getHp() + " HP");
             }
             turno++;
         }
-
-        if(p.isVivo())
-            return true;
-        else
-            return false;
     }
 
-    public void infliggiDanno(Entita e1, Entita e2) {
+    public int infliggiDanno(Entita e1, Entita e2) {
         int danno = calcolaDanno(e1);
         e2.setHp(danno);
+        return danno;
     }
     
     public int calcolaDanno(Entita e) {

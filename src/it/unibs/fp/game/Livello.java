@@ -6,6 +6,9 @@ import it.unibs.fp.mylib.InputDati;
 
 import java.util.ArrayList;
 
+/**
+ * Classe per controllo del livello, movimenti e menu di scelta;
+ */
 public class Livello {
     private static final int SPOST = 1;
 
@@ -13,6 +16,7 @@ public class Livello {
     private Personaggio p;
     private ArrayList<Mostro> mostri = new ArrayList<>();
     private ArrayList<Chest> forzieri = new ArrayList<>();
+    private ArrayList<Oggetto> pozioni = new ArrayList<>();
     private int princessCol;
     private int princessRow;
     private boolean princessSalva;
@@ -23,10 +27,6 @@ public class Livello {
         creaElementiLivello();
     }
 
-    public boolean getPrincessSalva() {
-        return princessSalva;
-    }
-
     public Personaggio getP() {
         return p;
     }
@@ -35,6 +35,9 @@ public class Livello {
         return mappa;
     }
 
+    /**
+     * Aggiunta della principessa, Creazione degli elementi implementati
+     */
     public void creaElementiLivello() {
         //AGGIUNTA PRINCIPESSA
         princessCol = 30;
@@ -48,6 +51,12 @@ public class Livello {
         }
     }
 
+    /**
+     * Switch per creazione degli elementi
+     * @param cella
+     * @param x poszione x
+     * @param y posizone y
+     */
     private void creaElementi(Cella cella, int x, int y) {
         switch(cella.getC()) {
             case 'O':
@@ -64,6 +73,11 @@ public class Livello {
         }
     }
 
+    /**
+     * Creazione giocatore
+     * @param x
+     * @param y
+     */
     public void creaGiocatore(int x, int y) {
         this.p = new Personaggio(InputDati.leggiStringaNonVuota("Inserire nome del giocatore: "), x, y);
     }
@@ -117,7 +131,7 @@ public class Livello {
     }
 
     public boolean inputComandi() {
-        char comando = InputDati.leggiUpperChar("Inserire comando (WASD movimento, E apri forziere, M apri inventario)", "W A S D E M");
+        char comando = InputDati.leggiUpperChar("Inserire comando (W A S D movimento, E apri forziere, M apri inventario)", "W A S D E M");
         switch (comando) {
             case 'W', 'S', 'A', 'D' -> {
                 movimentoPersonaggio(comando);
@@ -204,9 +218,19 @@ public class Livello {
         System.out.println("Nessun forziere da aprire");
     }
 
-    private void usaOggettoInventario() {
+    private boolean usaOggettoInventario() {
+        int scelta = sceltaMenuInventario();
+        if(scelta != 0) {
+            p.setOgg(p.getInventario().get(scelta - 1));
+            System.out.println("Oggetto in uso: " + p.getOgg().toString());
+            if (p.getOgg().getTipo() == Oggetto.POZIONE) {
+                p.cura(Personaggio.HP / 2);
+                System.out.println("Nuovi HP: " + p.getHp());
+                return true;
+            }
+        }
+        return false;
     }
-
 
     private boolean mostraMenu() {
         ClassMenu menu = new ClassMenu("Scelta: ", new String[]{"Inventario", "Statistiche", "Abbandona la partita", "Usa oggetto da Inventario"});
@@ -226,20 +250,13 @@ public class Livello {
                 return false;
             }
             case 4 -> {
-                int scelta = sceltaMenuInventario();
-                p.setOgg(p.getInventario().get(scelta - 1));
-                if (p.getOgg().getTipo() == Oggetto.POZIONE) {
-                    p.cura(Personaggio.HP / 2);
-                    return true;
-                }
-                return false;
+                return usaOggettoInventario();
             }
             default -> {
                 return false;
             }
         }
     }
-
 
     private void movimentoPersonaggio(char comando) {
         int oldX = p.getX();
@@ -316,8 +333,30 @@ public class Livello {
         for(Mostro m : mostri) {
             if(p.getX() == m.getX() && p.getY() == m.getY()) {
                 Scontro s = new Scontro(p, m);
-                esito = s.battaglia();
-                if(esito) {
+                s.battaglia();
+                if(p.isVivo()) {
+                    System.out.println("Hai vinto lo scontro con il mostro");
+                }
+                else {
+                    System.out.println("Hai perso lo scontro con il Mostro");
+                }
+
+                oldM = m;
+                break;
+            }
+        }
+        this.mostri.remove(oldM);
+    }
+
+    public void isAPlayer() {
+        boolean esito;
+        Mostro oldM = null;
+
+        for(Mostro m : mostri) {
+            if(p.getX() == m.getX() && p.getY() == m.getY()) {
+                Scontro s = new Scontro(m, p);
+                s.battaglia();
+                if(p.isVivo()) {
                     System.out.println("Hai vinto lo scontro con il mostro");
                 }
                 else {
