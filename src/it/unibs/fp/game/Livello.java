@@ -128,8 +128,7 @@ public class Livello {
                 return true;
             }
             case 'M' -> {
-                mostraMenu();
-                return false;
+                return mostraMenu();
             }
             default -> {
                 return false;
@@ -139,25 +138,43 @@ public class Livello {
 
     public int sceltaMenuInventario() {
         String[] objs = new String[p.getnObj()];
-        /*
-        for(Oggetto o : p.getInventario())
-            objs[i++] = o.toString();
-         */
         for(int i = 0; i < p.getnObj(); i++)
             objs[i] = p.getInventario().get(i).toString();
 
-        ClassMenu menuObj = new ClassMenu("Scegli oggetto (0 per scartare il nuovo oggetto): ", objs);
+        ClassMenu menuObj = new ClassMenu("Scegli oggetto (0 per non modificare): ", objs);
         return menuObj.scegli();
     }
 
-    private void apriCesta() {
+    public boolean controllaTipo(String tipo) {
+        for(Oggetto o : p.getInventario())
+            if(o.getTipo().equals(tipo))
+                return true;
+        return false;
+    }
+
+    public void apriCesta() {
         Chest oldC = null;
         for(Chest c : forzieri) {
             if(p.getX() == c.getX() && p.getY() == c.getY()) {
                 Oggetto newObj = c.getOgg();
                 System.out.println(newObj);
+                if(newObj.getTipo() == Oggetto.ARMA && controllaTipo(Oggetto.ARMA) || newObj.getTipo() == Oggetto.SCUDO && controllaTipo(Oggetto.SCUDO)) {
+                    Oggetto old = null;
+                    for(int i = 0; i < p.getnObj(); i++)
+                        if (newObj.getTipo().equals(p.getInventario().get(i).getTipo())) {
+                            old = p.getInventario().get(i);
+                            break;
+                        }
 
-                if(p.getnObj() == Personaggio.MAX_OGGETTI) {
+                    ClassMenu menuObj = new ClassMenu("Scegli oggetto (0 per non modificare): ", new String[]{"New: " + newObj, "Old: " + old.toString()});
+                    int scelta = menuObj.scegliNoZero();
+
+                    if(scelta == 1) {
+                        p.aggiungiOggettoInventario(newObj);
+                        p.rimuoviOggettoInventario(old);
+                    }
+                }
+                else if(p.getnObj() == Personaggio.MAX_OGGETTI) {
                     System.out.println("Sostituisci oggetto");
                     int scelta = sceltaMenuInventario();
 
@@ -170,7 +187,7 @@ public class Livello {
                 else {
                     p.setOgg(newObj);
                     p.aggiungiOggettoInventario(newObj);
-                    System.out.println("Sceglio oggetto da usare");
+                    System.out.println("Scegli oggetto da usare");
                     int scelta = sceltaMenuInventario();
 
                     if(scelta != 0)
@@ -191,22 +208,35 @@ public class Livello {
     }
 
 
-    private void mostraMenu() {
-        ClassMenu menu = new ClassMenu("Scelta: ", new String[]{"Inventario", "Statistiche", "Abbandona la partita"});
+    private boolean mostraMenu() {
+        ClassMenu menu = new ClassMenu("Scelta: ", new String[]{"Inventario", "Statistiche", "Abbandona la partita", "Usa oggetto da Inventario"});
         switch (menu.scegliNoZero()) {
-            case 1:
+            case 1 -> {
                 usaOggettoInventario();
                 System.out.println("Inventario:\n" + p.stampaInventario());
-                break;
-            case 2:
+                return false;
+            }
+            case 2 -> {
                 System.out.println("Statistiche:\n" + p.stampaStatistiche());
-                break;
-            case 3:
+                return false;
+            }
+            case 3 -> {
                 System.out.println("Partita terminata");
                 System.exit(0);
-                break;
-            default:
-                break;
+                return false;
+            }
+            case 4 -> {
+                int scelta = sceltaMenuInventario();
+                p.setOgg(p.getInventario().get(scelta - 1));
+                if (p.getOgg().getTipo() == Oggetto.POZIONE) {
+                    p.cura(Personaggio.HP / 2);
+                    return true;
+                }
+                return false;
+            }
+            default -> {
+                return false;
+            }
         }
     }
 

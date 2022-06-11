@@ -3,10 +3,10 @@ package it.unibs.fp.game;
 import java.util.ArrayList;
 
 public class Personaggio extends Entita{
-    private static final int HP = 20;
-    private static final int ATTACCO_BASE = 5;
-    private static final int DIFESA_BASE = 5;
-    private static final Oggetto OGGETTO_BASE = new Oggetto(Oggetto.PUGNI, 1);
+    public static final int HP = 20;
+    public static final int ATTACCO_BASE = 5;
+    public static final int DIFESA_BASE = 5;
+    public static final Oggetto OGGETTO_BASE = new Oggetto(Oggetto.PUGNI, 1);
     public static final int MAX_OGGETTI = 6;
 
     private ArrayList<Oggetto> inventario = new ArrayList<>();
@@ -45,6 +45,23 @@ public class Personaggio extends Entita{
         }
     }
 
+    @Override
+    public void setHp(int danno) {
+        if(ogg.getTipo() == Oggetto.SCUDO) {
+            int dannoRimanente = ogg.getHpScudo() - danno;
+            if(dannoRimanente > 0)
+                ogg.setHpScudo(Oggetto.HP_SCUDO - dannoRimanente);
+            else {
+                super.setHp(-dannoRimanente);
+                inventario.remove(ogg);
+                ogg = inventario.get(0);
+                System.out.println("Scudo sostituto con " + ogg.toString());
+            }
+        }
+        else
+            super.setHp(danno);
+    }
+
     public StringBuffer stampaStatistiche() {
         StringBuffer stats = new StringBuffer();
         stats.append("Nome: " + getNome() + "\n");
@@ -54,5 +71,11 @@ public class Personaggio extends Entita{
         stats.append("Oggetto Base: " + getOgg().toString() + "\n");
 
         return stats;
+    }
+
+    public void cura(int cura) {
+        super.setHp(-cura);
+        if(getHp() > Personaggio.HP)
+            this.hp = HP;
     }
 }
