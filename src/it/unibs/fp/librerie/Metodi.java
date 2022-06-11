@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
  * Classe con metodi utili
  */
 public class Metodi {
-
     /**
      * Metodo per generare un numero casuale compreso tra 2 estremi, escluso lo 0
      * <p>Il numero viene rigenerato se e' uguale a 0</p>

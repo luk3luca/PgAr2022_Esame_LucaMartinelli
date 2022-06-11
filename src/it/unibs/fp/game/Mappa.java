@@ -23,6 +23,11 @@ public class Mappa {
         return mappa[row][col];
     }
 
+    public void setCella(int row, int col, char c) {
+        mappa[row][col] = new Cella('c');
+    }
+
+
     public Cella[][] getMappa() {
         return mappa;
     }

@@ -13,16 +13,24 @@ public class Scontro {
     
     public boolean battaglia() {
         int turno = 0;
+
         while(this.p.isVivo() && this.m.isVivo()) {
             if(Metodi.isPari(turno)) {
-
+                infliggiDanno(p, m);
             }
+            else
+                infliggiDanno(m, p);
         }
+
+        if(p.isVivo())
+            return true;
+        else
+            return false;
     }
 
-    public void battaglia(Entita e1, Entita e2) {
-        int danno = calcolaDanno(p);
-        m.setHp(danno);
+    public void infliggiDanno(Entita e1, Entita e2) {
+        int danno = calcolaDanno(e1);
+        e2.setHp(danno);
     }
     
     public int calcolaDanno(Entita e) {

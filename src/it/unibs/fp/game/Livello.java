@@ -2,10 +2,13 @@ package it.unibs.fp.game;
 
 import it.unibs.fp.librerie.Metodi;
 import it.unibs.fp.mylib.InputDati;
+import it.unibs.fp.mylib.MyMenu;
 
 import java.util.ArrayList;
 
 public class Livello {
+    private static final int SPOST = 1;
+
     Mappa mappa;
     Personaggio p;
     ArrayList<Mostro> mostri;
@@ -15,6 +18,7 @@ public class Livello {
 
     public Livello() {
         this.mappa = new Mappa();
+        creaElementiLivello();
     }
 
     public void creaElementiLivello() {
@@ -39,7 +43,7 @@ public class Livello {
                 mostri.add(creaMostro(x, y));
                 break;
             case 'C':
-                forzieri.add(creaCesta());
+                forzieri.add(creaCesta(x, y));
                 break;
             default:
                 break;
@@ -60,7 +64,7 @@ public class Livello {
         return new Mostro(name, hp, ogg, x, y);
     }
 
-    public Chest creaCesta() {
+    public Chest creaCesta(int x, int y) {
         String tipo = oggettoProbabilita();
         int potenza = switch (tipo) {
             case Oggetto.ARMA -> Metodi.generateRandom(35, 55);
@@ -69,7 +73,7 @@ public class Livello {
             default -> 0;
         };
 
-        return new Chest(new Oggetto(tipo, potenza));
+        return new Chest(new Oggetto(tipo, potenza), x, y);
 
     }
 
@@ -98,4 +102,96 @@ public class Livello {
         return oggetti[index];
     }
 
+    public void turno() {
+
+    }
+
+    public boolean inputComandi() {
+        char comando = InputDati.leggiUpperChar("Inserire comando (WASD movimento, E apri, M inventario)", "WASDEM");
+        switch(comando){
+            case 'W': case 'S': case 'A': case 'D':
+                movimentoPoersonaggio(comando);
+                return true;
+                break;
+            case 'E':
+                apriCesta();
+                break;
+            case 'M':
+                mostraMenu();
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
+
+    private void mostraMenu() {
+        MyMenu menu = new MyMenu("Scelta: ", )
+    }
+
+    private void movimentoPoersonaggio(char comando) {
+        int oldX = p.getX();
+        int oldY = p.getY();
+        int newY;
+        int newX;
+
+        switch (comando) {
+            case 'W':
+                newY = oldY - SPOST;
+                if (newY >= 0 && mappa.getCella(newY, oldX).getC() != '#') {
+                    p.setY(newY);
+                    //VECCHIA CELLA
+                    mappa.setCella(oldY, oldX, '.');
+                    //NUOVA CELLA
+                    mappa.setCella(newY, oldX, 'O');
+                } else {
+                    System.out.println("Limite");
+                }
+                break;
+            case 'S':
+                newY = oldY + SPOST;
+                if (newY <= mappa.getHeight() && mappa.getCella(newY, oldX).getC() != '#') {
+                    p.setY(newY);
+                    //VECCHIA CELLA
+                    mappa.setCella(oldY, oldX, '.');
+                    //NUOVA CELLA
+                    mappa.setCella(newY, oldX, 'O');
+                } else {
+                    System.out.println("Limite");
+                }
+                break;
+            case 'A':
+                newX = oldX - SPOST;
+                if (newX >= 0 && mappa.getCella(oldY, newX).getC() != '#') {
+                    p.setX(newX);
+                    //VECCHIA CELLA
+                    mappa.setCella(oldY, oldX, '.');
+                    //NUOVA CELLA
+                    mappa.setCella(oldY, newX, 'O');
+                } else {
+                    System.out.println("Limite");
+                }
+                break;
+            case 'D':
+                newX = oldX + SPOST;
+                if (newX <= mappa.getWidth() && mappa.getCella(oldY, newX).getC() != '#') {
+                    p.setX(newX);
+                    //VECCHIA CELLA
+                    mappa.setCella(oldY, oldX, '.');
+                    //NUOVA CELLA
+                    mappa.setCella(oldY, newX, 'O');
+                } else {
+                    System.out.println("Limite");
+                }
+                break;
+
+            default:
+                System.out.println("NA");
+                break;
+        }
+    }
+
+
 }
+
+

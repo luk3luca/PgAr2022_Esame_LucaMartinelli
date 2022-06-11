@@ -8,6 +8,7 @@ public class Oggetto {
 
     private String tipo;
     private int potenza;
+    //private String descrizione;
 
     public Oggetto(String tipo, int potenza) {
         this.tipo = tipo;
