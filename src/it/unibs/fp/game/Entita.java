@@ -8,6 +8,7 @@ public class Entita {
     Oggetto ogg;
     int x;
     int y;
+    boolean isVivo;
 
     public Entita(String nome, int hp, int attaccoBase, int difesaBase, Oggetto ogg, int x, int y) {
         this.nome = nome;
@@ -17,6 +18,7 @@ public class Entita {
         this.ogg = ogg;
         this.x = x;
         this.y = y;
+        this.isVivo = true;
     }
 
     public String getNome() {

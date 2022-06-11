@@ -3,7 +3,6 @@ package it.unibs.fp.game;
 import it.unibs.fp.librerie.ClassMenu;
 import it.unibs.fp.librerie.Metodi;
 import it.unibs.fp.mylib.InputDati;
-import it.unibs.fp.mylib.MyMenu;
 
 import java.util.ArrayList;
 
@@ -16,10 +15,20 @@ public class Livello {
     private ArrayList<Chest> forzieri = new ArrayList<>();
     private int princessCol;
     private int princessRow;
+    private boolean princessSalva;
 
     public Livello() {
         this.mappa = new Mappa();
+        princessSalva = false;
         creaElementiLivello();
+    }
+
+    public boolean getPrincessSalva() {
+        return princessSalva;
+    }
+
+    public Personaggio getP() {
+        return p;
     }
 
     public Mappa getMappa() {
@@ -56,7 +65,7 @@ public class Livello {
     }
 
     public void creaGiocatore(int x, int y) {
-        this.p = new Personaggio(InputDati.leggiStringaNonVuota("Inserire nome del giocatore"), x, y);
+        this.p = new Personaggio(InputDati.leggiStringaNonVuota("Inserire nome del giocatore: "), x, y);
     }
 
     public Mostro creaMostro(int x, int y) {
@@ -73,7 +82,7 @@ public class Livello {
         String tipo = oggettoProbabilita();
         int potenza = switch (tipo) {
             case Oggetto.ARMA -> Metodi.generateRandom(35, 55);
-            case Oggetto.SCUDO -> 5;
+            case Oggetto.SCUDO -> 1;
             case Oggetto.POZIONE -> 1;
             default -> 0;
         };
@@ -107,15 +116,12 @@ public class Livello {
         return oggetti[index];
     }
 
-    public void turno() {
-
-    }
-
     public boolean inputComandi() {
-        char comando = InputDati.leggiUpperChar("Inserire comando (WASD movimento, E apri forziere, M apri inventario)", "WASDEM");
+        char comando = InputDati.leggiUpperChar("Inserire comando (WASD movimento, E apri forziere, M apri inventario)", "W A S D E M");
         switch (comando) {
             case 'W', 'S', 'A', 'D' -> {
-                movimentoPoersonaggio(comando);
+                movimentoPersonaggio(comando);
+                isPrincessSalva();
                 return true;
             }
             case 'E' -> {
@@ -133,6 +139,7 @@ public class Livello {
     }
 
     private void apriCesta() {
+        Chest oldC = null;
         for(Chest c : forzieri) {
             if(p.getX() == c.getX() && p.getY() == c.getY()) {
                 Oggetto newObj = c.getOgg();
@@ -159,8 +166,13 @@ public class Livello {
                     p.getInventario().add(newObj);
                 }
                  */
+                oldC = c;
+                break;
             }
         }
+        //RIMOZIONE CESTA APERTA
+        if(oldC != null)
+            this.forzieri.remove(oldC);
         System.out.println("Nessun forziere da aprire");
     }
 
@@ -182,7 +194,7 @@ public class Livello {
         }
     }
 
-    private void movimentoPoersonaggio(char comando) {
+    private void movimentoPersonaggio(char comando) {
         int oldX = p.getX();
         int oldY = p.getY();
         int newY;
@@ -244,6 +256,65 @@ public class Livello {
         }
     }
 
+    public void isAMostro() {
+        boolean esito;
+        Mostro oldM = null;
+
+        for(Mostro m : mostri) {
+            if(p.getX() == m.getX() && p.getY() == m.getY()) {
+                Scontro s = new Scontro(p, m);
+                esito = s.battaglia();
+                if(esito) {
+                    System.out.println("Hai vinto lo scontro con il mostro");
+                }
+                else {
+                    System.out.println("Hai perso lo scontro con il Mostro");
+                }
+
+                oldM = m;
+                break;
+            }
+        }
+        this.mostri.remove(oldM);
+    }
+
+    public boolean isPrincessSalva() {
+        if(p.getX() == princessRow && p.getY() == princessCol)
+            return true;
+        return false;
+    }
+
+
+    public void pathfindingMostri() {
+        for(Mostro m : mostri)
+            spostamentoMostro(m);
+    }
+
+    public void spostamentoMostro(Mostro m) {
+        int direzione = Metodi.generateRandom(1,4);
+        int nSpost = 0;
+        do {
+            switch (direzione) {
+                int oldX = m.getX();
+                int oldY = m.getY();
+                int newY;
+                int newX;
+                case 1:     //W
+                    newY = oldY -SPOST;
+                    if(newY >= 0)
+                        break;
+                case 2:     //S
+                    break;
+                case 3:     //A
+                    break;
+                case 4:     //D
+                    break;
+                default:
+                    break;
+
+            }
+        }while(nSpost < 4 && )
+    }
 
 }
 

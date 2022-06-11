@@ -2,7 +2,7 @@ package it.unibs.fp.game;
 
 public class Main {
     public static void main(String[] args) {
-        Livello level = new Livello();
-        level.getMappa().stampaMappa();
+        Partita p = new Partita();
+        System.out.println(p.gioco());;
     }
 }

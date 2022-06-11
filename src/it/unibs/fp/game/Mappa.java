@@ -24,7 +24,7 @@ public class Mappa {
     }
 
     public void setCella(int row, int col, char c) {
-        mappa[row][col] = new Cella('c');
+        mappa[row][col] = new Cella(c);
     }
 
     public Cella[][] getMappa() {
@@ -32,16 +32,6 @@ public class Mappa {
     }
 
     public void stampaMappa() {
-        /*
-        for(int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                System.out.print(mappa[i][j].stampa() + " ");
-            }
-            System.out.println();
-        }
-
-         */
-
         for(Cella[] cr : mappa) {
             for (Cella cc : cr)
                 System.out.print(cc.getC() + " ");

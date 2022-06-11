@@ -5,7 +5,7 @@ import it.unibs.fp.mylib.InputDati;
 public class ClassMenu {
     private static final String CORNICE = "--------------------------------";
     private static final String VOCE_USCITA = "0\tEsci";
-    private static String RICHIESTA_INSERIMENTO = "Scegli pietra > ";
+    private static String RICHIESTA_INSERIMENTO = "Scegli -> ";
 
     private String titolo;
     private String[] voci;

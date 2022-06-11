@@ -18,8 +18,10 @@ public class Scontro {
             if(Metodi.isPari(turno)) {
                 infliggiDanno(p, m);
             }
-            else
+            else {
                 infliggiDanno(m, p);
+            }
+            turno++;
         }
 
         if(p.isVivo())
