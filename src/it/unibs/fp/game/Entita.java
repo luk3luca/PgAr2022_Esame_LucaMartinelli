@@ -1,14 +1,14 @@
 package it.unibs.fp.game;
 
 public class Entita {
-    String nome;
-    int hp;
-    int attaccoBase;
-    int difesaBase;
-    Oggetto ogg;
-    int x;
-    int y;
-    boolean isVivo;
+    private String nome;
+    private int hp;
+    private int attaccoBase;
+    private int difesaBase;
+    private Oggetto ogg;
+    private int x;
+    private int y;
+    private boolean isVivo;
 
     public Entita(String nome, int hp, int attaccoBase, int difesaBase, Oggetto ogg, int x, int y) {
         this.nome = nome;
@@ -53,8 +53,12 @@ public class Entita {
      * rimozione di HP del danno
      * @param danno
      */
-    public void setHp(int danno) {
+    public void setDanno(int danno) {
         this.hp -= danno;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
     }
 
     public void setX(int x) {

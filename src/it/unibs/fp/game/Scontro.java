@@ -36,7 +36,7 @@ public class Scontro {
 
     public int infliggiDanno(Entita e1, Entita e2) {
         int danno = calcolaDanno(e1);
-        e2.setHp(danno);
+        e2.setDanno(danno);
         return danno;
     }
 

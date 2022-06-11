@@ -1,5 +1,6 @@
 package it.unibs.fp.librerie;
 
+
 import it.unibs.fp.mylib.InputDati;
 
 public class ClassMenu {

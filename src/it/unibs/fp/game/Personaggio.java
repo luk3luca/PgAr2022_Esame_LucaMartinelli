@@ -14,7 +14,7 @@ public class Personaggio extends Entita{
 
     public Personaggio(String nome, int x, int y) {
         super(nome, HP, ATTACCO_BASE, DIFESA_BASE, OGGETTO_BASE, x, y);
-        aggiungiOggettoInventario(ogg);
+        aggiungiOggettoInventario(getOgg());
     }
 
     public StringBuffer stampaInventario() {
@@ -51,20 +51,20 @@ public class Personaggio extends Entita{
      * @param danno
      */
     @Override
-    public void setHp(int danno) {
-        if(ogg.getTipo() == Oggetto.SCUDO) {
-            int dannoRimanente = ogg.getHpScudo() - danno;
+    public void setDanno(int danno) {
+        if(getOgg().getTipo() == Oggetto.SCUDO) {
+            int dannoRimanente = getOgg().getHpScudo() - danno;
             if(dannoRimanente > 0)
-                ogg.setHpScudo(Oggetto.HP_SCUDO - dannoRimanente);
+                getOgg().setHpScudo(Oggetto.HP_SCUDO - dannoRimanente);
             else {
-                super.setHp(-dannoRimanente);
-                inventario.remove(ogg);
-                ogg = inventario.get(0);
-                System.out.println("Scudo sostituto con " + ogg.toString());
+                super.setDanno(-dannoRimanente);
+                inventario.remove(getOgg());
+                setOgg(inventario.get(0));
+                System.out.println("Scudo sostituto con " + getOgg().toString());
             }
         }
         else
-            super.setHp(danno);
+            super.setDanno(danno);
     }
 
     public StringBuffer stampaStatistiche() {
@@ -83,8 +83,8 @@ public class Personaggio extends Entita{
      * @param cura
      */
     public void cura(int cura) {
-        super.setHp(-cura);
+        super.setDanno(-cura);
         if(getHp() > Personaggio.HP)
-            this.hp = HP;
+            setHp(HP);
     }
 }

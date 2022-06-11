@@ -7,10 +7,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../test jar/serina_intellij.jar!/" />
+          <root url="jar://$MODULE_DIR$/../Librerie/serina_intellij.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

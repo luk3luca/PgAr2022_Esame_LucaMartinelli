@@ -5,7 +5,7 @@ public class Main {
         Partita p = new Partita();
         boolean risultatoPartita = p.gioco();
         if(risultatoPartita)
-            System.out.println("Complimenti hai vinto");
+            System.out.println("Complimenti hai salvato la Principessa Kibo");
         else
             System.out.println("GAME OVER");
     }
