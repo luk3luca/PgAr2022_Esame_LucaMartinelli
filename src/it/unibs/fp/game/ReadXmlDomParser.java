@@ -53,7 +53,6 @@ public class ReadXmlDomParser {
         }
 
         return mappa;
-
     }
 
 }

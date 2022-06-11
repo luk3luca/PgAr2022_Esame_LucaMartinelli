@@ -49,10 +49,6 @@ public class Metodi {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
-        System.out.println(generatePermutation("dijkstra"));
-    }
-
     public static boolean isPari(int n) {
         return n % 2 == 0;
     }
