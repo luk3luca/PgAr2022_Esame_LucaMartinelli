@@ -56,14 +56,4 @@ public class ReadXmlDomParser {
 
     }
 
-    public static void main(String[] args) {
-        Cella[][] mappa = creaMappa();
-        for(int i = 0; i < 22; i++) {
-            for (int j = 0; j < 31; j++) {
-                System.out.print(mappa[i][j].stampa() + " ");
-            }
-            System.out.println();
-        }
-    }
-
 }

@@ -10,11 +10,12 @@ public class Personaggio extends Entita{
     public static final int MAX_OGGETTI = 6;
 
     private ArrayList<Oggetto> inventario;
-    private int nObj = inventario.size();
+    private int nObj;
 
     public Personaggio(String nome, int x, int y) {
         super(nome, HP, ATTACCO_BASE, DIFESA_BASE, OGGETTO_BASE, x, y);
         this.inventario = new ArrayList<>();
+        nObj = inventario.size();
     }
 
     public StringBuffer stampaInventario() {

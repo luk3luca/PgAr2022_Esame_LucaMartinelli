@@ -12,14 +12,18 @@ public class Livello {
 
     private Mappa mappa;
     private Personaggio p;
-    private ArrayList<Mostro> mostri;
-    private ArrayList<Chest> forzieri;
+    private ArrayList<Mostro> mostri = new ArrayList<>();
+    private ArrayList<Chest> forzieri = new ArrayList<>();
     private int princessCol;
     private int princessRow;
 
     public Livello() {
         this.mappa = new Mappa();
         creaElementiLivello();
+    }
+
+    public Mappa getMappa() {
+        return mappa;
     }
 
     public void creaElementiLivello() {

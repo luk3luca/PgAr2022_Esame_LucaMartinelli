@@ -8,7 +8,6 @@ public class Chest {
     private Oggetto ogg;
     private int x;
     private int y;
-    private boolean open = false;
 
     public Chest(Oggetto o, int x, int y) {
         this.ogg = o;
@@ -28,11 +27,4 @@ public class Chest {
         return y;
     }
 
-    public boolean getOpen() {
-        return open;
-    }
-
-    public void setOpen(boolean open) {
-        this.open = open;
-    }
 }
